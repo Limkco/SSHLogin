@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 禁止脚本在任何命令失败时退出
+set +e
+
 # 确保环境变量已设置
 if [[ -z "$SSH_SERVER" || -z "$SSH_USER" || -z "$SSH_PASS" ]]; then
   echo "❌ 错误: SSH_SERVER, SSH_USER 或 SSH_PASS 没有设置!"
@@ -37,7 +40,7 @@ EOF
   if [ $SSH_STATUS -eq 0 ]; then
     echo "✅ 用户 $USER 在 $SERVER 登录成功!"
   else
-    echo "❌ 用户 $USER 在 $SERVER 登录失败!"
+    echo "❌ 用户 $USER 在 $SERVER 登录失败! 错误代码: $SSH_STATUS"
   fi
 
   echo "----------------------------------------"
