@@ -1,0 +1,39 @@
+name: SSH Login Test
+
+on:
+  workflow_dispatch:  # 允许手动触发
+  schedule:
+    - cron: "0 0 */30 * *"  # 每天午夜运行
+
+jobs:
+  ssh-login:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Process SSH Login
+        run: |
+          # 读取 Secrets，并按行分割存入数组
+          IFS=$'\n' read -d '' -r -a servers <<< "${{ secrets.SSH_SERVER }}"
+          IFS=$'\n' read -d '' -r -a users <<< "${{ secrets.SSH_USER }}"
+          IFS=$'\n' read -d '' -r -a passwords <<< "${{ secrets.SSH_PASS }}"
+
+          # 遍历每行的服务器、用户和密码
+          for i in "${!servers[@]}"; do
+            SERVER="${servers[$i]}"
+            USER="${users[$i]}"
+            PASS="${passwords[$i]}"
+
+            echo "Logging in as $USER on $SERVER..."
+
+            sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -tt "$USER@$SERVER" << EOF
+                echo "登录成功 - 用户: $USER"
+                ls -lah
+                exit
+EOF
+          done
