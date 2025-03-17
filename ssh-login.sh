@@ -28,8 +28,8 @@ for i in "${!servers[@]}"; do
 
   echo "🔄 正在尝试登录: 用户: $USER 服务器: $SERVER ..."
 
-  # 使用 sshpass 执行 SSH，防止脚本中断，且无论成功失败都继续执行
-  sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$USER@$SERVER" << EOF
+  # 使用 sshpass 执行 SSH，添加 -n 防止读取 stdin
+  sshpass -p "$PASS" ssh -n -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$USER@$SERVER" << 'EOF'
     echo "✅ 登录成功 - 用户: $USER"
     ls -lah
     exit
