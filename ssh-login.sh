@@ -28,7 +28,7 @@ for i in "${!servers[@]}"; do
 
   echo "🔄 正在尝试登录: 用户: $USER 服务器: $SERVER ..."
 
-  # 使用 sshpass 执行 SSH，并捕获状态
+  # 使用 sshpass 执行 SSH，捕获状态并防止脚本退出
   sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$USER@$SERVER" << EOF
     echo "✅ 登录成功 - 用户: $USER"
     ls -lah
@@ -37,6 +37,7 @@ EOF
 
   SSH_STATUS=$?
 
+  # 输出结果，包含用户名，且不会屏蔽
   if [ $SSH_STATUS -eq 0 ]; then
     echo "✅ 用户 $USER 在 $SERVER 登录成功!"
   else
