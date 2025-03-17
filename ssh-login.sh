@@ -7,7 +7,7 @@ IFS=',' read -ra passwords <<< "$SSH_PASS"
 
 # 确保数组长度一致
 if [[ ${#servers[@]} -ne ${#users[@]} || ${#servers[@]} -ne ${#passwords[@]} ]]; then
-  echo "Error: SSH_SERVER, SSH_USER, SSH_PASS 数量不匹配!"
+  echo "❌ Error: SSH_SERVER, SSH_USER, SSH_PASS 数量不匹配!"
   exit 1
 fi
 
@@ -17,11 +17,22 @@ for i in "${!servers[@]}"; do
   USER="${users[$i]}"
   PASS="${passwords[$i]}"
 
-  echo "Logging in as $USER on $SERVER..."
+  echo "🔄 正在尝试登录: 用户: $USER 服务器: $SERVER ..."
 
+  # 使用 sshpass 执行 SSH，并捕获状态
   sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -tt "$USER@$SERVER" << EOF
-      echo "登录成功 - 用户: $USER"
+      echo "✅ 登录成功 - 用户: $USER"
       ls -lah
       exit
 EOF
+
+  SSH_STATUS=$?
+  
+  if [ $SSH_STATUS -eq 0 ]; then
+    echo "✅ 用户 $USER 在 $SERVER 登录成功!"
+  else
+    echo "❌ 用户 $USER 在 $SERVER 登录失败!"
+  fi
+
+  echo "----------------------------------------"
 done
