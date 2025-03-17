@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Ensure environment variables are set
+if [[ -z "$SSH_SERVER" || -z "$SSH_USER" || -z "$SSH_PASS" ]]; then
+  echo "❌ Error: SSH_SERVER, SSH_USER, or SSH_PASS is not set!"
+  exit 1
+fi
+
 # 读取 Secrets，并按逗号分割存入数组
 IFS=',' read -ra servers <<< "$SSH_SERVER"
 IFS=',' read -ra users <<< "$SSH_USER"
@@ -21,9 +27,9 @@ for i in "${!servers[@]}"; do
 
   # 使用 sshpass 执行 SSH，并捕获状态
   sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -tt "$USER@$SERVER" << EOF
-      echo "✅ 登录成功 - 用户: $USER"
-      ls -lah
-      exit
+    echo "✅ 登录成功 - 用户: $USER"
+    ls -lah
+    exit
 EOF
 
   SSH_STATUS=$?
