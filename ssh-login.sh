@@ -26,7 +26,7 @@ for i in "${!servers[@]}"; do
   echo "🔄 正在尝试登录: 用户: $USER 服务器: $SERVER ..."
 
   # 使用 sshpass 执行 SSH，并捕获状态
-  sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -tt "$USER@$SERVER" << EOF
+  sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$USER@$SERVER" << EOF
     echo "✅ 登录成功 - 用户: $USER"
     ls -lah
     exit
