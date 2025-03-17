@@ -1,9 +1,9 @@
-name: SSH Login Test
+name: SSH Login
 
 on:
   workflow_dispatch:  # 允许手动触发
   schedule:
-    - cron: "0 0 */30 * *"  # 每天午夜运行
+    - cron: "0 0 */20 * *"  # 每天午夜运行
 
 jobs:
   ssh-login:
