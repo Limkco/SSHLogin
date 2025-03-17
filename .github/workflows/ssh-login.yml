@@ -19,9 +19,9 @@ jobs:
       - name: Process SSH Login
         run: |
           # 读取 Secrets，使用逗号作为分隔符
-          IFS=',' read -r -a servers <<< "${{ secrets.SSH_SERVER }}"
-          IFS=',' read -r -a users <<< "${{ secrets.SSH_USER }}"
-          IFS=',' read -r -a passwords <<< "${{ secrets.SSH_PASS }}"
+          IFS=',' read -ra servers <<< "$(echo "${{ secrets.SSH_SERVER }}")"
+          IFS=',' read -ra users <<< "$(echo "${{ secrets.SSH_USER }}")"
+          IFS=',' read -ra passwords <<< "$(echo "${{ secrets.SSH_PASS }}")"
 
           # 确保数组长度一致
           if [[ ${#servers[@]} -ne ${#users[@]} || ${#servers[@]} -ne ${#passwords[@]} ]]; then
