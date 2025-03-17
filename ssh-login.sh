@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Ensure environment variables are set
+# 确保环境变量已设置
 if [[ -z "$SSH_SERVER" || -z "$SSH_USER" || -z "$SSH_PASS" ]]; then
-  echo "❌ Error: SSH_SERVER, SSH_USER, or SSH_PASS is not set!"
+  echo "❌ 错误: SSH_SERVER, SSH_USER 或 SSH_PASS 没有设置!"
   exit 1
 fi
 
@@ -13,7 +13,7 @@ IFS=',' read -ra passwords <<< "$SSH_PASS"
 
 # 确保数组长度一致
 if [[ ${#servers[@]} -ne ${#users[@]} || ${#servers[@]} -ne ${#passwords[@]} ]]; then
-  echo "❌ Error: SSH_SERVER, SSH_USER, SSH_PASS 数量不匹配!"
+  echo "❌ 错误: SSH_SERVER, SSH_USER, SSH_PASS 数量不匹配!"
   exit 1
 fi
 
@@ -33,7 +33,7 @@ for i in "${!servers[@]}"; do
 EOF
 
   SSH_STATUS=$?
-  
+
   if [ $SSH_STATUS -eq 0 ]; then
     echo "✅ 用户 $USER 在 $SERVER 登录成功!"
   else
@@ -42,3 +42,5 @@ EOF
 
   echo "----------------------------------------"
 done
+
+echo "全部登录尝试已完成！"
